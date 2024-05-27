@@ -1,0 +1,111 @@
+---
+title: Nexchief Setup
+description: Setup the Repository
+---
+
+import { Steps, FileTree } from '@astrojs/starlight/components'
+
+## Config Project
+<Steps>
+1. Clone the [Repository](https://bitbucket.org/nexcloud/nexchief2/) at bitbucket.`Select project nexchief2`.
+
+
+
+2. Once done a clone the repository. you need to edit config project by open : 
+
+    <FileTree>
+        - nexchief2
+            - config
+                - config_dev.json
+                - **config_development.json**
+                - config_production.json
+                - config_production_nexcentrum.json
+                - config_production_nexcore.json
+                - config_sandbox.json
+                - config_sandbox_nexcentrum.json
+                - config_staging.json
+    </FileTree>
+    choose the `config_development.json` for development config. 
+
+
+
+3. Edit file `config_development.json` : 
+
+    **1. Replace the user, password and database with the actual values.** 
+    ```json
+            "postgresql": {
+                "address": "user=**** password=**** dbname=**** sslmode=disable host=localhost port=5432",
+                "default_schema": "nexchief",
+                "max_open_connection": 500,
+                "max_idle_connection": 100
+            },
+            "postgresql_view": {
+                "address": "user=**** password=**** dbname=**** sslmode=disable host=localhost port=5432",
+                "default_schema": "nexchief",
+                "max_open_connection": 500,
+                "max_idle_connection": 100
+            },
+    ```
+    **2. Edit `language_directory_path`, `sql_migrate_dir_path`, and `nexchief_frontend`.`host`**
+    ```json
+            "language_directory_path": "./src/nexsoft.co.id/nexchief2/i18n",
+            "sql_migrate_dir_path": "./src/nexsoft.co.id/nexchief2/sql_migrations",
+            "nexchief_frontend": {
+                "host": "https://staging-chief.nexcloud.id",
+                "path_redirect": {
+                "sysadmin_activation": "/nexsoft-admin/activation",
+                "sysuser_activation": "/activation",
+                "sysadmin_reset_password": "/nexsoft-admin/reset/password",
+                "sysuser_reset_password": "/reset/password",
+                "verify_user_path": "/v1/user/verify"
+                }
+            },
+    ```
+    **3. Edit the `authentication_server` with auth server that you want to use**
+    ```json
+            ...
+            "authentication_server": {
+            "host": "https://staging-oauth.nexcloud.id",
+            ...
+            }
+        ...
+
+    ```
+    **4. Edit the `dir_file_resource` for save generated data like *NCO*, *OBD*, *TReport* and etc**
+    ```json
+            ...
+            "dir_file_resource": {
+            "path": "/file_nexchief2/file_resource",
+            ...
+            }
+        ...
+    ```
+    **5. Edit the 'sharing_folder' if neccessary.**
+    ```json
+        ...
+            "sharing_folder": {
+                "nci": "C:/file_nexchief2/nci",
+                "nexmile": "/file_nexchief2/file_resource/nexmile",
+                "inspira": "C:/file_nexchief2/file_resource/inspira",
+                "edipo_uci": "/file_nexchief2/file_resource/edipo_uci"
+            },
+        ...
+    ```
+</Steps>
+
+## Setup environment variables
+
+
+After config the project you need to configure the environment variables, 
+its declared in :  
+    <FileTree>
+        - nexchief2
+            - config
+                - **ConfigStruct.go**
+    </FileTree>
+code : 
+```go
+func GenerateConfiguration(arguments string) {
+	var err error
+	enviName := os.Getenv("Nexchief2Config")
+```
